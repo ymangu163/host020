@@ -15,6 +15,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	
 	private SlidingMenu sm;
 	private MenuFragment menuFragment;
+	private HomeFragment homeFragment;
 
 	/**
      * 1 得到滑动菜单
@@ -47,14 +48,15 @@ public class MainActivity extends SlidingFragmentActivity {
 		getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, menuFragment,"Menu").commit();
 			
 		
-		HomeFragment homeFragment = new HomeFragment();
-		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, homeFragment).commit();
-		
-		
+		homeFragment = new HomeFragment();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, homeFragment,"Home").commit();
 		
 		
 	}
-                                                                                  
+     public HomeFragment getHomeFragment(){
+    	 homeFragment=(HomeFragment)getSupportFragmentManager().findFragmentByTag("Home");
+    	 return homeFragment;    	 
+     }                                                                             
 
 
 }

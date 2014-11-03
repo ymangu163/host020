@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yn020.host.MainActivity;
 import com.yn020.host.R;
 import com.yn020.host.utils.ToastUtils;
 
@@ -41,6 +42,7 @@ public class MenuFragment extends BaseFragment implements OnItemClickListener {
 	}
 	private String[] menuStr={" 注  册"," 识  别"," 设  置"};
 	private MenuAdapter menuAdapter;
+	private HomeFragment homeFragment;
 	
 	
 	
@@ -51,11 +53,16 @@ public class MenuFragment extends BaseFragment implements OnItemClickListener {
 		menuAdapter.setCurPosition(position);
 		slidingMenu.toggle();
 		ToastUtils.disToast(ctx, "您选择的是："+menuStr[position]);
+		if(homeFragment==null){
+			if(getActivity() instanceof MainActivity){
+				homeFragment = ((MainActivity)getActivity()).getHomeFragment();
+			}			
+		}		
 		
-		
-		
-		
+		homeFragment.viewPager.setCurrentItem(position,false);
+
 	}
+	
 	public void initMenu(){
 
 		if(menuAdapter==null){
@@ -121,17 +128,6 @@ public class MenuFragment extends BaseFragment implements OnItemClickListener {
 			return convertView;
 		}		
 		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 	
 }
