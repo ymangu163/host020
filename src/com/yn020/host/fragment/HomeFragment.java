@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
@@ -25,6 +26,8 @@ public class HomeFragment extends BaseFragment {
 	private View view;
 	@ViewInject(R.id.viewpager)
 	public ViewPager viewPager;
+	@ViewInject(R.id.fp_listview)
+	private ListView fp_listview;
 
 	@Override
 	public View initView(LayoutInflater inflater) {
@@ -66,6 +69,10 @@ public class HomeFragment extends BaseFragment {
 
 			}
 		});
+		
+		
+		
+		
 
 	}
 
