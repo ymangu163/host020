@@ -2,36 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal"
     android:layout_margin="5dip"
-     >
+    android:orientation="horizontal" >
 
     <Button
         android:id="@+id/enroll_fp_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="145dip"
         android:background="@drawable/common_button_bg"
+        android:gravity="center"
         android:paddingLeft="20dip"
         android:paddingRight="20dip"
         android:text="单个注册"
         android:textColor="@drawable/common_button_textcolor"
-        android:textSize="20sp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="145dip"
-        />
+        android:textSize="20sp" />
+
     <Button
         android:id="@+id/auto_enroll_fp_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dip"
         android:background="@drawable/common_button_bg"
+        android:gravity="center"
         android:paddingLeft="20dip"
         android:paddingRight="20dip"
         android:text="连续注册"
         android:textColor="@drawable/common_button_textcolor"
-        android:textSize="20sp"
-        android:layout_gravity="center" 
-        android:layout_marginLeft="10dip"/>
-    
-    
+        android:textSize="20sp" />
 
 </LinearLayout>

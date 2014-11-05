@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
@@ -111,5 +112,4 @@ public class HomeFragment extends BaseFragment {
 		}
 
 	}
-
 }

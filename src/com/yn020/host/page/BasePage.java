@@ -7,7 +7,7 @@ import android.view.View;
 public abstract class BasePage {
 	private View view;
 	public Context ctx;
-
+	public Object  fpSynchrLock =new Object(); //指纹操作的同步锁
 	public BasePage(Context ctx) {
 		this.ctx = ctx;
 		LayoutInflater inflater = (LayoutInflater) ctx
