@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/tv_fp_no"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dip"
         android:gravity="center"        
         android:singleLine="true"        
         android:textSize="18sp" 
@@ -18,7 +18,7 @@
       <TextView
         android:id="@+id/tv_fp_id"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dip"
         android:gravity="center"      
         android:singleLine="true"      
         android:textSize="18sp" 
@@ -26,12 +26,11 @@
        
      <ImageView
         android:id="@+id/iv_fp_lv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        
+        android:layout_width="80dip"
+        android:layout_height="50dip"        
         android:background="@drawable/delete"       
         android:contentDescription="删除的图片"        
-        android:scaleType="fitCenter"
-        android:layout_weight="1"
+         android:scaleType="centerInside"     
          />
     
 

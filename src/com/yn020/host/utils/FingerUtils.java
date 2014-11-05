@@ -1,19 +1,26 @@
 package com.yn020.host.utils;
 
 import com.yn020.host.R;
+import com.yn020.host.fragment.HomeFragment;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class FingerUtils {
 	public static  long mId=0;
 	public static MediaPlayer mediaPlayer;
+	private static byte[] imageBytes;
+	private static long[] imageSizes;
 	public FingerUtils() {
 		
 	}
 	// **************************注册指纹***************************************//
-	public static int Enroll_FP(Context ctx){
+	public static int Enroll_FP(Context ctx,HomeFragment homeFragment){
+	
 		boolean w_return = false;
 		long[] id = new long[1];
 		w_return=FingerManager.getSharedInstance().FPM_getAvailableId(id);	
@@ -32,7 +39,10 @@ public class FingerUtils {
 
 			}				
 			mediaPlayer=MediaPlayer.create(ctx, R.raw.detect);	
-			mediaPlayer.start(); 
+			mediaPlayer.start(); 		
+			
+			Get_FingerImage(homeFragment.imageHandler);//画指纹图像
+			
 			FingerManager.getSharedInstance().FPM_loopDetectFinger();//等待松开手指
 			
 			w_return = FingerManager.getSharedInstance().FPM_enrollId_Times(id[0], i + 1);
@@ -94,8 +104,33 @@ public class FingerUtils {
 		return re_clear;
 	}
 	
-	
-	
+	// **************************获取指纹图像**********************************//
+	public static boolean Get_FingerImage(Handler handler){
+		if(imageBytes==null){
+			imageBytes = new byte[242 * 266];			
+		}
+		if(imageSizes==null){
+			imageSizes = new long[2];			
+		}
+		FingerRawPrintData fingerRawPrintData = null;
+		boolean ret_FingerImage=false;	//采集指纹图像标志
+		Drawable fingerDrawable=null;
+		ret_FingerImage =FingerManager.getSharedInstance().FPM_getFingerImage(imageBytes, imageSizes);
+		if (ret_FingerImage){
+			fingerRawPrintData = new FingerRawPrintData();
+			fingerRawPrintData.setRawData(imageBytes);
+			fingerRawPrintData.setImage_W((int) imageSizes[0]);
+			fingerRawPrintData.setImage_H((int) imageSizes[0]);
+			fingerDrawable = fingerRawPrintData.toDrawable(); // 处理的部分放在这里，显示才不会卡
+			
+			Message msg =Message.obtain();
+			msg.obj=fingerDrawable;
+			handler.sendMessage(msg);
+						
+		}				
+		
+		return ret_FingerImage;
+	}
 	
 	
 	

@@ -93,7 +93,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		protected Integer doInBackground(String... params) {
 			int b_enroll=0;
 			synchronized (fpSynchrLock) {
-				b_enroll=FingerUtils.Enroll_FP(ctx);					
+				b_enroll=FingerUtils.Enroll_FP(ctx,homeFragment);					
 				
 			}			
 			return b_enroll;

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -13,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +36,10 @@ public class HomeFragment extends BaseFragment {
 	public ViewPager viewPager;
 	@ViewInject(R.id.fp_listview)
 	private ListView fp_listview;
-
+	@ViewInject(R.id.fp_image)
+//	private com.yn020.host.page.CircleImage fp_image;
+	private ImageView fp_image;
+	
 	@Override
 	public View initView(LayoutInflater inflater) {
 		view = inflater.inflate(R.layout.home_frag_layout, null);
@@ -90,11 +97,25 @@ public class HomeFragment extends BaseFragment {
 		
 	}
 	
+//	  @SuppressLint("NewApi")
+//	public void DrawFpImage(Drawable drawable){
+//		  int i=0;
+//		  LogUtils.d("DrawFpImage-->"+ i++);
+//		  if(drawable!=null){
+//			  fp_image.setImageDrawable(drawable);	  
+//		  }
+//		  
+//	  }
+	
+	public Handler imageHandler=new Handler(){		
+		public void handleMessage(android.os.Message msg) {
+			Drawable fingerDrawable = (Drawable) msg.obj;
+			 fp_image.setImageDrawable(fingerDrawable);	  
+			
+		};
+	};
 	
 	
-	
-	
-
 	class HomePageAdapter extends PagerAdapter {
 		private Context ctx;
 		private List<BasePage> list;
@@ -170,16 +191,10 @@ public class HomeFragment extends BaseFragment {
 			LogUtils.d("getView-->"+list.get(position).get("fp_No")+"-->"+list.get(position).get("fp_Id"));
 			
 			
-			
 			return convertView;			
 		}			
 		
 	}
-	
-	
-	
-	
-	
 	
 	
 	
