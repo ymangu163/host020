@@ -2,6 +2,7 @@ package com.yn020.host.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,12 +11,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yn020.host.R;
 import com.yn020.host.page.BasePage;
@@ -38,9 +41,11 @@ public class HomeFragment extends BaseFragment {
 	}
 
 	List<BasePage> list = new ArrayList<BasePage>();
+	private HomeBaseAdapter homeBaseAdapter;
+
 
 	@Override
-	public void initData(Bundle savedInstanceState) {
+	public void initData(Bundle savedInstanceState) {		
 		list.add(new EnrollPage(ctx));
 		list.add(new IdentifyPage(ctx));
 		list.add(new SettingPage(ctx));
@@ -70,12 +75,25 @@ public class HomeFragment extends BaseFragment {
 
 			}
 		});
-		
-		
-		
-		
 
 	}
+	
+	public void freshListViewData(List<Map<String,Long>> list){
+		
+		if(homeBaseAdapter==null){
+			homeBaseAdapter = new HomeBaseAdapter(ctx, list);
+			fp_listview.setAdapter(homeBaseAdapter);		
+		}else{
+			homeBaseAdapter.notifyDataSetChanged();
+		}	
+		
+		
+	}
+	
+	
+	
+	
+	
 
 	class HomePageAdapter extends PagerAdapter {
 		private Context ctx;
@@ -112,4 +130,57 @@ public class HomeFragment extends BaseFragment {
 		}
 
 	}
+	
+	
+	
+	class HomeBaseAdapter extends BaseAdapter{
+		private List<Map<String,Long>> list;	
+		private Context ctx;
+		
+		public HomeBaseAdapter(Context ctx,List<Map<String,Long>> list) {
+			super();
+			this.list=list;
+			this.ctx = ctx;
+		}
+
+		@Override
+		public int getCount() {			
+			return list.size();
+		}
+
+		@Override
+		public Object getItem(int position) {			
+			return list.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {			
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if(convertView==null){
+				convertView=View.inflate(ctx, R.layout.item_fp_list, null);
+			}
+			TextView tvFpNo=(TextView) convertView.findViewById(R.id.tv_fp_no);
+			TextView tvFpId=(TextView) convertView.findViewById(R.id.tv_fp_id);
+			tvFpNo.setText(list.get(position).get("fp_No").toString());
+			tvFpId.setText(list.get(position).get("fp_Id").toString());
+			LogUtils.d("getView-->"+list.get(position).get("fp_No")+"-->"+list.get(position).get("fp_Id"));
+			
+			
+			
+			return convertView;			
+		}			
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

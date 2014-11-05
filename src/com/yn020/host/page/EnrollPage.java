@@ -1,5 +1,11 @@
 package com.yn020.host.page;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -12,6 +18,7 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yn020.host.R;
+import com.yn020.host.fragment.HomeFragment;
 import com.yn020.host.utils.FingerManager;
 import com.yn020.host.utils.FingerUtils;
 import com.yn020.host.utils.ToastUtils;
@@ -23,6 +30,10 @@ public class EnrollPage extends BasePage implements OnClickListener {
 	private Button auto_enroll_fp_btn;
 	private View view;
 	private boolean isAuto=false;
+	private List<Map<String,Long>> list;
+	private long  fp_No=0;
+	
+	
 	public EnrollPage(Context ctx) {
 		super(ctx);
 	}
@@ -40,7 +51,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		
 		auto_enroll_fp_btn.setOnClickListener(this);
 		enroll_fp_btn.setOnClickListener(this);
-		
+		list = new ArrayList<Map<String,Long>>();
 
 	}
 	/**
@@ -102,6 +113,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 			case FingerManager.ERR_SUCCESS:
 				str="注册成功，ID="+ FingerUtils.mId;
 				MediaPlayer.create(ctx, R.raw.success).start();
+				AddToList(FingerUtils.mId);
 				break;
 			case FingerManager.ERR_DUPLICATION_ID:
 				str="指纹重复！";
@@ -117,8 +129,18 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		}	
 		
 	}
-	
-	
+
+	public void AddToList(long fp_id) {
+		fp_No++;
+		Map<String,Long> map=new HashMap<String, Long>();
+		map.put("fp_No", fp_No);
+		map.put("fp_Id",fp_id);
+		list.add(map);
+		
+		homeFragment.freshListViewData(list);		
+			
+		
+	}
 	
 	
 	
