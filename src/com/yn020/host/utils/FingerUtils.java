@@ -86,6 +86,8 @@ public class FingerUtils {
 			w_return = FingerManager.getSharedInstance().FPM_getIdentifyImage();
 		}
 		MediaPlayer.create(ctx, R.raw.detect).start();
+		Get_FingerImage(homeFragment.imageHandler);//画指纹图像
+		
 		FingerManager.getSharedInstance().FPM_loopDetectFinger(); //等待手指松开
 		w_return = FingerManager.getSharedInstance().FPM_identifyFP(id);
 		if(w_return){
@@ -106,13 +108,8 @@ public class FingerUtils {
 	}
 	
 	// **************************清空所有指纹**********************************//
-	public boolean ClearALlFP(){
+	public static boolean ClearALlFP(){
 		boolean re_clear = FingerManager.getSharedInstance().FPM_deleteAllFP();
-		
-		
-		
-		
-		
 		
 		return re_clear;
 	}

@@ -10,6 +10,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,12 +51,15 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 //	private com.yn020.host.page.CircleImage fp_image;
 	private ImageView fp_image;
 	
+	@ViewInject(R.id.clear_btn)
+	private Button clear_btn;
 	
 	@Override
 	public View initView(LayoutInflater inflater) {
 		view = inflater.inflate(R.layout.home_frag_layout, null);
 		ViewUtils.inject(this, view);	
-		fp_listview.setOnItemClickListener(this);		
+		fp_listview.setOnItemClickListener(this);	
+		clear_btn.setOnClickListener(this);
 		return view;
 	}
 
@@ -95,9 +100,6 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 
 			}
 		});
-		
-	
-
 	}
 	
 	public void freshListViewData(List<Map<String,Long>> list){
@@ -257,17 +259,11 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 					deleteDialog = builder.create();
 					deleteDialog.show();
 				}
-
-				
 			});
-			
-			
 			
 			return convertView;			
 		}
 
-				
-		
 	}
 
 
@@ -286,12 +282,44 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 
 	@Override
 	public void onClick(View v) {
-		
+		switch (v.getId()) {
+		case R.id.clear_btn:
+			new ClearTask().execute();
+			
+			
+			
+			break;
+
+		default:
+			break;
+		}
 		
 	}
 
-	
-	
-	
+	class ClearTask extends AsyncTask<Void, Void, Boolean>{
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			synchronized (enrollPage.fpSynchrLock) {
+			return	FingerUtils.ClearALlFP();
+								
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			LogUtils.d("enter onPostExecute");
+			if(result){
+				ToastUtils.disToast(ctx, "清空指纹成功！");
+				fpDataList.removeAll(fpDataList);				
+				homeBaseAdapter.notifyDataSetChanged();
+			}else{
+				ToastUtils.disToast(ctx, "清空指纹失败！");
+				
+			}			
+			
+		}		
+	}
 	
 }

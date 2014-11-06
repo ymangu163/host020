@@ -28,6 +28,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 	private Button enroll_fp_btn;
 	@ViewInject(R.id.auto_enroll_fp_btn)
 	private Button auto_enroll_fp_btn;
+
 	private View view;
 	public boolean isAuto=false;
 	public boolean singleEnroll=false;
@@ -128,12 +129,12 @@ public class EnrollPage extends BasePage implements OnClickListener {
 							str="指纹重复！";
 							MediaPlayer.create(ctx, R.raw.fail).start();
 							break;				
-						case FingerManager.ERR_FAIL:
-							str= "注册失败！";
-							MediaPlayer.create(ctx, R.raw.fail).start();
+						case -1:
+							str="退出循环.";
 							break;
 						default:
-							str="退出循环.";
+							str= "注册失败！";
+							MediaPlayer.create(ctx, R.raw.fail).start();
 							break;
 						}
 //						ToastUtils.disToast(ctx, str);	
@@ -150,7 +151,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 			
 			
 			break;
-
+	
 		default:
 			break;
 		}
@@ -209,6 +210,10 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		
 	}
 
+	
+	
+	
+	
 	public void AddToList(long fp_id) {
 		fp_No++;
 		Map<String,Long> map=new HashMap<String, Long>();
