@@ -54,8 +54,9 @@ public class HomeFragment extends BaseFragment {
 	@Override
 	public void initData(Bundle savedInstanceState) {	
 		enrollPage = new EnrollPage(ctx);
+		identifyPage = new IdentifyPage(ctx);
 		list.add(enrollPage);
-		list.add(new IdentifyPage(ctx));
+		list.add(identifyPage);
 		list.add(new SettingPage(ctx));
 
 		HomePageAdapter homePageAdapter = new HomePageAdapter(ctx, list);
@@ -116,6 +117,7 @@ public class HomeFragment extends BaseFragment {
 		};
 	};
 	public EnrollPage enrollPage;
+	public IdentifyPage identifyPage;
 	
 	
 	class HomePageAdapter extends PagerAdapter {

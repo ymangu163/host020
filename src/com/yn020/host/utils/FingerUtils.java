@@ -33,21 +33,20 @@ public class FingerUtils {
 		if (!w_return) {
 			return 1;
 		}
-		for (int i = 0; i < 3; i++) {
-			LogUtils.d("in for i-->"+i);
+		for (int i = 0; i < 3; i++) {			
 			w_return = false;
 			while (!w_return) {// 获取图像
 				//在这里检测一下 是否已退出了循环注册且是不是单次注册
 				if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
-					return 1;
+					if(i==0){ //新开始的注册
+						return -1;
+					}else{
+						return 1;						
+					}
 				}
 				w_return = FingerManager.getSharedInstance().FPM_getEnrollImage();
 
-			}				
-			//在这里检测一下 是否已退出了循环注册且是不是单次注册
-			if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
-				return 1;
-			}
+			}							
 			mediaPlayer=MediaPlayer.create(ctx, R.raw.detect);	
 			mediaPlayer.start(); 		
 			
@@ -76,27 +75,32 @@ public class FingerUtils {
 	}
 	
 	// **************************识别指纹***************************************//
-	public boolean Identify_FP(){
+	public static int Identify_FP(Context ctx,HomeFragment homeFragment){
 		long[] id = new long[1];
 		boolean w_return = false;
 		while (!w_return) {
+			//在这里检测一下 是否已退出了循环识别且是不是单次识别
+			if(!homeFragment.identifyPage.isAuto &&!homeFragment.identifyPage.singleIdentify){
+				return -1;
+			}
 			w_return = FingerManager.getSharedInstance().FPM_getIdentifyImage();
 		}
+		MediaPlayer.create(ctx, R.raw.detect).start();
 		FingerManager.getSharedInstance().FPM_loopDetectFinger(); //等待手指松开
 		w_return = FingerManager.getSharedInstance().FPM_identifyFP(id);
 		if(w_return){
-			this.mId=id[0];
+			mId=id[0];
+			return 0;
+		}else{
+			return 1;			
 		}
 		
-		return w_return;
 	}
 	
 	
 	// **************************删除单个指纹********************************//
 	public int  Delete_FP(long id){
-		if(!Identify_FP()){
-			return -2;	//识别失败
-		}
+	
 		boolean ret_delete=FingerManager.getSharedInstance().FPM_deleteFP(id);
 		if(ret_delete){
 			return 0;	//删除成功

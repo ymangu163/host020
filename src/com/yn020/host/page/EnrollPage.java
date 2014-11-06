@@ -115,9 +115,12 @@ public class EnrollPage extends BasePage implements OnClickListener {
 							str="指纹重复！";
 							MediaPlayer.create(ctx, R.raw.fail).start();
 							break;				
-						default:
+						case FingerManager.ERR_FAIL:
 							str= "注册失败！";
 							MediaPlayer.create(ctx, R.raw.fail).start();
+							break;
+						default:
+							str="退出循环.";
 							break;
 						}
 //						ToastUtils.disToast(ctx, str);	
@@ -151,6 +154,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		@Override
 		protected Integer doInBackground(String... params) {
 			int b_enroll=0;
+			enroll_fp_btn.setEnabled(false);
 			synchronized (fpSynchrLock) {
 				singleEnroll=true;
 				b_enroll=FingerUtils.Enroll_FP(ctx,homeFragment);					
@@ -167,8 +171,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(Integer result) {			
-			super.onPostExecute(result);
-			singleEnroll=false;
+			super.onPostExecute(result);			
 			String str="";
 			switch (result) {
 			case FingerManager.ERR_SUCCESS:
@@ -186,7 +189,8 @@ public class EnrollPage extends BasePage implements OnClickListener {
 				break;
 			}
 			ToastUtils.disToast(ctx, str);			
-			
+			singleEnroll=false;
+			enroll_fp_btn.setEnabled(true);
 		}	
 		
 	}
