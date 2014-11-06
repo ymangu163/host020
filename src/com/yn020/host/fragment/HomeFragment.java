@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import android.annotation.SuppressLint;
+
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,10 +17,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,8 +36,10 @@ import com.yn020.host.page.BasePage;
 import com.yn020.host.page.EnrollPage;
 import com.yn020.host.page.IdentifyPage;
 import com.yn020.host.page.SettingPage;
+import com.yn020.host.utils.FingerUtils;
+import com.yn020.host.utils.ToastUtils;
 
-public class HomeFragment extends BaseFragment implements OnItemClickListener {
+public class HomeFragment extends BaseFragment implements OnItemClickListener, OnClickListener {
 	private View view;
 	@ViewInject(R.id.viewpager)
 	public ViewPager viewPager;
@@ -43,18 +49,18 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener {
 //	private com.yn020.host.page.CircleImage fp_image;
 	private ImageView fp_image;
 	
+	
 	@Override
 	public View initView(LayoutInflater inflater) {
 		view = inflater.inflate(R.layout.home_frag_layout, null);
 		ViewUtils.inject(this, view);	
-		fp_listview.setOnItemClickListener(this);
-		
+		fp_listview.setOnItemClickListener(this);		
 		return view;
 	}
 
 	List<BasePage> list = new ArrayList<BasePage>();
 	private HomeBaseAdapter homeBaseAdapter;
-
+	private int deletePosition=1;
 
 	@Override
 	public void initData(Bundle savedInstanceState) {	
@@ -97,7 +103,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener {
 	public void freshListViewData(List<Map<String,Long>> list){
 		fpDataList = list;
 		if(homeBaseAdapter==null){
-			homeBaseAdapter = new HomeBaseAdapter(ctx, list);
+			homeBaseAdapter = new HomeBaseAdapter(ctx, fpDataList);
 			fp_listview.setAdapter(homeBaseAdapter);		
 		}else{
 			homeBaseAdapter.notifyDataSetChanged();
@@ -127,6 +133,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener {
 	public IdentifyPage identifyPage;
 	public List<Map<String,Long>> fpDataList;
 	public Long fp_Id=(long) 1;  //用于1:1 验证时传递的id值
+	private AlertDialog deleteDialog;
 	
 	
 	class HomePageAdapter extends PagerAdapter {
@@ -198,7 +205,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener {
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
 			if(convertView==null){
 				convertView=View.inflate(ctx, R.layout.item_fp_list, null);
 			}
@@ -217,9 +224,49 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener {
 				tvFpNo.setTextColor(getResources().getColor(R.color.black));
 				tvFpId.setTextColor(getResources().getColor(R.color.black));
 				convertView.setBackgroundResource(R.drawable.abc_tab_indicator_ab_holo);
-			}			
+			}	
+			
+			ImageView ivDelete=(ImageView) convertView.findViewById(R.id.iv_fp_lv);
+			ivDelete.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					homeBaseAdapter.setCurPosition(position);
+					homeBaseAdapter.notifyDataSetChanged();
+					AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
+					builder.setIcon(android.R.drawable.ic_dialog_alert);
+					builder.setTitle("删除");
+					builder.setMessage("确认要删除该ID的指纹吗？");
+					builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Long id=fpDataList.get(position).get("fp_Id");
+							if(FingerUtils.Delete_FP(id)){
+								fpDataList.remove(position);
+								homeBaseAdapter.setCurPosition(0);
+								homeBaseAdapter.notifyDataSetChanged();
+								ToastUtils.disToast(ctx, "指纹ID="+fp_Id+"删除成功！");
+							}else{
+								ToastUtils.disToast(ctx, "删除失败！");
+							}
+							deleteDialog.dismiss();
+						}
+					});
+					builder.setNegativeButton("取消", null);
+					deleteDialog = builder.create();
+					deleteDialog.show();
+				}
+
+				
+			});
+			
+			
+			
 			return convertView;			
-		}			
+		}
+
+				
 		
 	}
 
@@ -230,8 +277,16 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		
 		homeBaseAdapter.setCurPosition(position);
 		fp_Id = fpDataList.get(position).get("fp_Id");		
+		this.deletePosition=position;
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		
 		
 	}
 

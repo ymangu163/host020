@@ -99,15 +99,10 @@ public class FingerUtils {
 	
 	
 	// **************************删除单个指纹********************************//
-	public int  Delete_FP(long id){
+	public static boolean  Delete_FP(long id){
 	
 		boolean ret_delete=FingerManager.getSharedInstance().FPM_deleteFP(id);
-		if(ret_delete){
-			return 0;	//删除成功
-		}else{
-			return -1;	//删除失败
-		}
-
+		return ret_delete;
 	}
 	
 	// **************************清空所有指纹**********************************//
