@@ -1,5 +1,6 @@
 package com.yn020.host.page;
 
+import com.lidroid.xutils.util.LogUtils;
 import com.yn020.host.MainActivity;
 import com.yn020.host.fragment.HomeFragment;
 
@@ -12,6 +13,8 @@ public abstract class BasePage {
 	public Context ctx;
 	public Object  fpSynchrLock =new Object(); //指纹操作的同步锁
 	public HomeFragment homeFragment;
+	public boolean isOperating;   //定义一个标志，解决各个按键冲突的问题
+	
 	public BasePage(Context ctx) {
 		this.ctx = ctx;
 		LayoutInflater inflater = (LayoutInflater) ctx
@@ -24,6 +27,17 @@ public abstract class BasePage {
 		}	
 
 	}
+	
+	
+	public boolean isOperating() {
+		LogUtils.d(" isOperating()--->"+isOperating);
+		return isOperating;
+	}
+	public void setOperating(boolean isOperating) {
+		this.isOperating = isOperating;
+		LogUtils.d("setOperating isOperating--->"+isOperating);
+	}
+
 
 	public View getRootView() {
 		return view;

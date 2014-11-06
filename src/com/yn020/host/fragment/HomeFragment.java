@@ -15,6 +15,9 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,7 +33,7 @@ import com.yn020.host.page.EnrollPage;
 import com.yn020.host.page.IdentifyPage;
 import com.yn020.host.page.SettingPage;
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements OnItemClickListener {
 	private View view;
 	@ViewInject(R.id.viewpager)
 	public ViewPager viewPager;
@@ -44,6 +47,8 @@ public class HomeFragment extends BaseFragment {
 	public View initView(LayoutInflater inflater) {
 		view = inflater.inflate(R.layout.home_frag_layout, null);
 		ViewUtils.inject(this, view);	
+		fp_listview.setOnItemClickListener(this);
+		
 		return view;
 	}
 
@@ -84,11 +89,13 @@ public class HomeFragment extends BaseFragment {
 
 			}
 		});
+		
+	
 
 	}
 	
 	public void freshListViewData(List<Map<String,Long>> list){
-		
+		fpDataList = list;
 		if(homeBaseAdapter==null){
 			homeBaseAdapter = new HomeBaseAdapter(ctx, list);
 			fp_listview.setAdapter(homeBaseAdapter);		
@@ -118,6 +125,8 @@ public class HomeFragment extends BaseFragment {
 	};
 	public EnrollPage enrollPage;
 	public IdentifyPage identifyPage;
+	public List<Map<String,Long>> fpDataList;
+	public Long fp_Id=(long) 1;  //用于1:1 验证时传递的id值
 	
 	
 	class HomePageAdapter extends PagerAdapter {
@@ -161,13 +170,18 @@ public class HomeFragment extends BaseFragment {
 	class HomeBaseAdapter extends BaseAdapter{
 		private List<Map<String,Long>> list;	
 		private Context ctx;
-		
+		private int curPosition=0;  //当前选中的项
 		public HomeBaseAdapter(Context ctx,List<Map<String,Long>> list) {
 			super();
 			this.list=list;
 			this.ctx = ctx;
 		}
 
+		public void setCurPosition(int position){
+			this.curPosition=position;
+			//选中之后，记得让它刷新 ，不然不会变色
+			notifyDataSetChanged();
+		}
 		@Override
 		public int getCount() {			
 			return list.size();
@@ -194,11 +208,34 @@ public class HomeFragment extends BaseFragment {
 			tvFpId.setText(list.get(position).get("fp_Id").toString());
 			LogUtils.d("getView-->"+list.get(position).get("fp_No")+"-->"+list.get(position).get("fp_Id"));
 			
-			
+			/**	让选中的为红色，没选中的是白色	**/
+			if(curPosition==position){
+				tvFpNo.setTextColor(getResources().getColor(R.color.red));		
+				tvFpId.setTextColor(getResources().getColor(R.color.red));				
+				convertView.setBackgroundResource(R.drawable.menu_item_bg_select);
+			}else{
+				tvFpNo.setTextColor(getResources().getColor(R.color.black));
+				tvFpId.setTextColor(getResources().getColor(R.color.black));
+				convertView.setBackgroundResource(R.drawable.abc_tab_indicator_ab_holo);
+			}			
 			return convertView;			
 		}			
 		
 	}
+
+
+	/**
+	 * 功能：listview Item被点击的监听事件
+	 **/
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		homeBaseAdapter.setCurPosition(position);
+		fp_Id = fpDataList.get(position).get("fp_Id");		
+		
+	}
+
+	
 	
 	
 	

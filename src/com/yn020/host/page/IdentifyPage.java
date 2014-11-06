@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yn020.host.R;
 import com.yn020.host.fragment.HomeFragment;
@@ -58,9 +59,21 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.verify_fp_btn:
-			new VerifyTask().execute(); 
+			LogUtils.d("single identify isOperating --->"+isOperating());
+			if(!isOperating()){
+				isOperating=true;
+				setOperating(isOperating);
+				new VerifyTask().execute(); 
+			}
+			
 			break;
 		case R.id.identify_fp_btn:
+			LogUtils.d("auto identify isOperating --->"+isOperating());
+			if(isOperating()){
+				return;
+			}
+			isOperating=true;
+			setOperating(isOperating);
 			if(!isAuto){				
 				identify_fp_btn.setText("    Free    ");									
 			}else{				
@@ -97,11 +110,12 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 					}
 					msg.obj=str;
 					idenfityHandler.sendMessage(msg);
-			}
+					isOperating=false;
+					setOperating(isOperating);
+					}
 					
 				}
 			}).start();			
-		
 		}
 	}
 
@@ -109,21 +123,35 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 
 		@Override
 		protected Integer doInBackground(Void... params) {
-			verify_fp_btn.setEnabled(false);
 			
-			return null;
+			singleIdentify=true;
+			int re_identify=0;
+			synchronized (fpSynchrLock) {
+				re_identify=FingerUtils.Identify_FP(ctx, homeFragment);
+			}
+			return re_identify;
 		}
 		
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
-			
-			
-			
-			
-			
-			
-			verify_fp_btn.setEnabled(true);
+			String str="";
+			switch (result) {
+			case FingerManager.ERR_SUCCESS:
+				if(FingerUtils.mId==homeFragment.fp_Id){
+					str="识别成功，ID="+ FingerUtils.mId;
+					MediaPlayer.create(ctx, R.raw.success).start();
+					break;					
+				}
+			default:
+				str="识别失败！";
+				MediaPlayer.create(ctx, R.raw.fail).start();	
+				break;
+			}
+			ToastUtils.disToast(ctx, str);
+			singleIdentify=false;	
+			isOperating=false;
+			setOperating(isOperating);
 		}
 		
 		

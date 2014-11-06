@@ -75,20 +75,33 @@ public class EnrollPage extends BasePage implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-		case R.id.enroll_fp_btn:			
-			new EnrollTask().execute();  //执行异步任务
-			
+		case R.id.enroll_fp_btn:
+			LogUtils.d("single Enroll isOperating --->"+isOperating());
+			/**
+			 * 注意：AsyncTask 是开启一个子线程来执行，所以不耽误主线程运行，还原isOperating状态就放在子线程中
+			 **/
+			if(!isOperating()){
+				isOperating=true;	
+				setOperating(isOperating);
+				new EnrollTask().execute();  //执行异步任务		
+			}
 			break;
 		case R.id.auto_enroll_fp_btn:
+			LogUtils.d("auto Enroll isOperating --->"+isOperating());
+			if(isOperating()){
+				LogUtils.d("quit auto enroll");
+				return;				
+			}
+			
+			isOperating=true;		
+			setOperating(isOperating);
 			if(!isAuto){				
 				auto_enroll_fp_btn.setText("    Free     ");									
 			}else{				
 				auto_enroll_fp_btn.setText("连续注册");					
 			}					
 			isAuto=!isAuto;
-//			while(isAuto){ //isAuto 为true时循环注册
-//				new EnrollTask().execute();  //执行异步任务			
-//			}			
+	
 			
 		new Thread(new Runnable() {
 			
@@ -126,8 +139,8 @@ public class EnrollPage extends BasePage implements OnClickListener {
 //						ToastUtils.disToast(ctx, str);	
 						msg.obj=str;
 						autoEnrollHandler.sendMessage(msg);
-						
-						
+						isOperating=false;		
+						setOperating(isOperating);
 					}	
 					
 				}
@@ -154,7 +167,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		@Override
 		protected Integer doInBackground(String... params) {
 			int b_enroll=0;
-			enroll_fp_btn.setEnabled(false);
+			
 			synchronized (fpSynchrLock) {
 				singleEnroll=true;
 				b_enroll=FingerUtils.Enroll_FP(ctx,homeFragment);					
@@ -183,14 +196,15 @@ public class EnrollPage extends BasePage implements OnClickListener {
 				str="指纹重复！";
 				MediaPlayer.create(ctx, R.raw.fail).start();
 				break;				
-			default:
+			case FingerManager.ERR_FAIL:
 				str= "注册失败！";
 				MediaPlayer.create(ctx, R.raw.fail).start();
 				break;
 			}
 			ToastUtils.disToast(ctx, str);			
 			singleEnroll=false;
-			enroll_fp_btn.setEnabled(true);
+			isOperating=false;
+			setOperating(isOperating);
 		}	
 		
 	}
