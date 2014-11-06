@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -103,6 +104,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	}
 	
 	public void freshListViewData(List<Map<String,Long>> list){
+		
 		fpDataList = list;
 		if(homeBaseAdapter==null){
 			homeBaseAdapter = new HomeBaseAdapter(ctx, fpDataList);
@@ -243,12 +245,12 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							Long id=fpDataList.get(position).get("fp_Id");
+							Long id=fpDataList.get(position).get("fp_Id");						
 							if(FingerUtils.Delete_FP(id)){
 								fpDataList.remove(position);
 								homeBaseAdapter.setCurPosition(0);
 								homeBaseAdapter.notifyDataSetChanged();
-								ToastUtils.disToast(ctx, "指纹ID="+fp_Id+"删除成功！");
+								ToastUtils.disToast(ctx, "指纹ID="+id+"删除成功！");
 							}else{
 								ToastUtils.disToast(ctx, "删除失败！");
 							}
@@ -258,6 +260,15 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 					builder.setNegativeButton("取消", null);
 					deleteDialog = builder.create();
 					deleteDialog.show();
+					/**
+					 * 功能：设置对话框参数，要在show()之后调用 
+					 **/					
+					WindowManager.LayoutParams params=deleteDialog.getWindow().getAttributes();
+					params.width=300;
+					params.height=251;
+					deleteDialog.getWindow().setAttributes(params);					
+				
+					
 				}
 			});
 			
@@ -284,10 +295,27 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.clear_btn:
-			new ClearTask().execute();
+			AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
+			builder.setIcon(android.R.drawable.ic_dialog_alert);
+			builder.setTitle("删除");
+			builder.setMessage("确认要清空指纹吗？");
+			builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {				    
+					new ClearTask().execute();
+					deleteDialog.dismiss();
+				}
+			});
+			builder.setNegativeButton("取消", null);
 			
+			deleteDialog = builder.create();
+			deleteDialog.show();
 			
-			
+			WindowManager.LayoutParams params=deleteDialog.getWindow().getAttributes();
+			params.width=300;
+			params.height=251;
+			deleteDialog.getWindow().setAttributes(params);	
 			break;
 
 		default:
@@ -312,8 +340,10 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 			LogUtils.d("enter onPostExecute");
 			if(result){
 				ToastUtils.disToast(ctx, "清空指纹成功！");
-				fpDataList.removeAll(fpDataList);				
-				homeBaseAdapter.notifyDataSetChanged();
+				if(fpDataList!=null){
+					fpDataList.removeAll(fpDataList);			
+					homeBaseAdapter.notifyDataSetChanged();	
+				}
 			}else{
 				ToastUtils.disToast(ctx, "清空指纹失败！");
 				
