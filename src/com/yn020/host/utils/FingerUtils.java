@@ -1,5 +1,6 @@
 package com.yn020.host.utils;
 
+import com.lidroid.xutils.util.LogUtils;
 import com.yn020.host.R;
 import com.yn020.host.fragment.HomeFragment;
 
@@ -26,18 +27,27 @@ public class FingerUtils {
 		w_return=FingerManager.getSharedInstance().FPM_getAvailableId(id);	
 		Log.i("TAG", "getAvaliableId return " + w_return + "  id=" + id[0]);
 		if (!w_return) { // 获取可能id失败
-			return -1;
+			return 1;
 		}
 		w_return = FingerManager.getSharedInstance().FPM_enrollFP_Start(id[0]);
 		if (!w_return) {
-			return -1;
+			return 1;
 		}
 		for (int i = 0; i < 3; i++) {
+			LogUtils.d("in for i-->"+i);
 			w_return = false;
 			while (!w_return) {// 获取图像
+				//在这里检测一下 是否已退出了循环注册且是不是单次注册
+				if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
+					return 1;
+				}
 				w_return = FingerManager.getSharedInstance().FPM_getEnrollImage();
 
 			}				
+			//在这里检测一下 是否已退出了循环注册且是不是单次注册
+			if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
+				return 1;
+			}
 			mediaPlayer=MediaPlayer.create(ctx, R.raw.detect);	
 			mediaPlayer.start(); 		
 			
@@ -48,9 +58,13 @@ public class FingerUtils {
 			w_return = FingerManager.getSharedInstance().FPM_enrollId_Times(id[0], i + 1);
 			Log.i("TAG", "enrollTimes " + i + " return " + w_return);
 			if (!w_return) {
-				return -1;
+				return 1;
 			}
 		}
+		if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
+			return 1;
+		}
+		
 		int ret_compose = FingerManager.getSharedInstance().FPM_enrollCompose(id[0]);
 		Log.i("TAG", "enollCompose " + id[0] + " return " + ret_compose);
 		

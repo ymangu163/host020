@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,7 +19,6 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yn020.host.R;
-import com.yn020.host.fragment.HomeFragment;
 import com.yn020.host.utils.FingerManager;
 import com.yn020.host.utils.FingerUtils;
 import com.yn020.host.utils.ToastUtils;
@@ -29,10 +29,13 @@ public class EnrollPage extends BasePage implements OnClickListener {
 	@ViewInject(R.id.auto_enroll_fp_btn)
 	private Button auto_enroll_fp_btn;
 	private View view;
-	private boolean isAuto=false;
+	public boolean isAuto=false;
+	public boolean singleEnroll=false;
 	private List<Map<String,Long>> list;
 	private long  fp_No=0;
+	private Handler autoEnrollHandler;
 	
+
 	
 	public EnrollPage(Context ctx) {
 		super(ctx);
@@ -52,6 +55,18 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		auto_enroll_fp_btn.setOnClickListener(this);
 		enroll_fp_btn.setOnClickListener(this);
 		list = new ArrayList<Map<String,Long>>();
+		
+		autoEnrollHandler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+			  int id=msg.arg1;
+			  String str=(String) msg.obj;
+			  if(id!=0){
+				  AddToList(id);			  
+			  }
+			  ToastUtils.disToast(ctx, str);	
+			}
+		};
 
 	}
 	/**
@@ -60,19 +75,63 @@ public class EnrollPage extends BasePage implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-		case R.id.enroll_fp_btn:		
+		case R.id.enroll_fp_btn:			
 			new EnrollTask().execute();  //执行异步任务
+			
 			break;
 		case R.id.auto_enroll_fp_btn:
-			if(!isAuto){
-				isAuto=!isAuto;
-				auto_enroll_fp_btn.setText("    Free     ");		
-			
-									
+			if(!isAuto){				
+				auto_enroll_fp_btn.setText("    Free     ");									
 			}else{				
-				isAuto=!isAuto;
 				auto_enroll_fp_btn.setText("连续注册");					
-			}			
+			}					
+			isAuto=!isAuto;
+//			while(isAuto){ //isAuto 为true时循环注册
+//				new EnrollTask().execute();  //执行异步任务			
+//			}			
+			
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true){
+					if(!isAuto){ //isAuto 为true循环，false为循环
+						break;
+					}
+					int b_enroll=0;
+					String str="";
+					Message msg=Message.obtain();
+					synchronized (fpSynchrLock) {
+						b_enroll=FingerUtils.Enroll_FP(ctx,homeFragment);	
+						LogUtils.d("b_enroll-->"+b_enroll);
+						switch (b_enroll) {
+						case FingerManager.ERR_SUCCESS:
+							str="注册成功，ID="+ FingerUtils.mId;
+							MediaPlayer.create(ctx, R.raw.success).start();
+							msg.arg1=(int) FingerUtils.mId;	 //把id发送到mq						
+//							AddToList(FingerUtils.mId);
+							break;
+						case FingerManager.ERR_DUPLICATION_ID:
+							str="指纹重复！";
+							MediaPlayer.create(ctx, R.raw.fail).start();
+							break;				
+						default:
+							str= "注册失败！";
+							MediaPlayer.create(ctx, R.raw.fail).start();
+							break;
+						}
+//						ToastUtils.disToast(ctx, str);	
+						msg.obj=str;
+						autoEnrollHandler.sendMessage(msg);
+						
+						
+					}	
+					
+				}
+			}
+		}).start();	
+			
+			
 			
 			break;
 
@@ -93,6 +152,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		protected Integer doInBackground(String... params) {
 			int b_enroll=0;
 			synchronized (fpSynchrLock) {
+				singleEnroll=true;
 				b_enroll=FingerUtils.Enroll_FP(ctx,homeFragment);					
 				
 			}			
@@ -108,6 +168,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		@Override
 		protected void onPostExecute(Integer result) {			
 			super.onPostExecute(result);
+			singleEnroll=false;
 			String str="";
 			switch (result) {
 			case FingerManager.ERR_SUCCESS:
@@ -137,9 +198,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		map.put("fp_Id",fp_id);
 		list.add(map);
 		
-		homeFragment.freshListViewData(list);		
-			
-		
+		homeFragment.freshListViewData(list);				
 	}
 	
 	

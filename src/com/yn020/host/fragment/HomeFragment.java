@@ -43,7 +43,7 @@ public class HomeFragment extends BaseFragment {
 	@Override
 	public View initView(LayoutInflater inflater) {
 		view = inflater.inflate(R.layout.home_frag_layout, null);
-		ViewUtils.inject(this, view);
+		ViewUtils.inject(this, view);	
 		return view;
 	}
 
@@ -52,8 +52,9 @@ public class HomeFragment extends BaseFragment {
 
 
 	@Override
-	public void initData(Bundle savedInstanceState) {		
-		list.add(new EnrollPage(ctx));
+	public void initData(Bundle savedInstanceState) {	
+		enrollPage = new EnrollPage(ctx);
+		list.add(enrollPage);
 		list.add(new IdentifyPage(ctx));
 		list.add(new SettingPage(ctx));
 
@@ -114,6 +115,7 @@ public class HomeFragment extends BaseFragment {
 			
 		};
 	};
+	public EnrollPage enrollPage;
 	
 	
 	class HomePageAdapter extends PagerAdapter {
