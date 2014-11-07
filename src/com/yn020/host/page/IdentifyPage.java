@@ -70,6 +70,10 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 		case R.id.identify_fp_btn:
 			LogUtils.d("auto identify isOperating --->"+isOperating());
 			if(isOperating()){
+				if(isAuto){ //正在循环识别的话,则退出循环
+					identify_fp_btn.setText("1:N 识别");		
+					isAuto=!isAuto;
+				}	
 				return;
 			}
 			isOperating=true;

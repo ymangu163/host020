@@ -90,6 +90,10 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		case R.id.auto_enroll_fp_btn:
 			LogUtils.d("auto Enroll isOperating --->"+isOperating());
 			if(isOperating()){
+				if(isAuto){ //正在循环注册的话,则退出循环
+					auto_enroll_fp_btn.setText("连续注册");	
+					isAuto=!isAuto;
+				}	
 				LogUtils.d("quit auto enroll");
 				return;				
 			}
