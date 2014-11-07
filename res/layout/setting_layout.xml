@@ -27,6 +27,7 @@
         android:layout_alignBaseline="@+id/security_textview"        
         android:textSize="20sp"
         android:background="@drawable/edittext_bg" 
+        android:paddingLeft="3dip"
         android:enabled="false">
     </EditText>
 
@@ -35,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/secure_level_edittext"
-        android:layout_marginTop="3dp"
+      
         android:layout_alignTop="@+id/security_textview"
         android:background="@drawable/down_arrow"
         android:clickable="true" />
@@ -70,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/dup_check_edittext"
         android:layout_below="@+id/secure_level_edittext"
-        android:layout_marginTop="3dp"
+        
         android:layout_alignTop="@+id/dup_check_textview"
         android:background="@drawable/down_arrow"
         android:clickable="true" />
