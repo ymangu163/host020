@@ -235,6 +235,11 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 				
 				@Override
 				public void onClick(View v) {
+					//当连续注册或连续识别没有释放时不弹出对话框。
+					if(enrollPage.isAuto || identifyPage.isAuto){
+						return;
+					}
+					
 					homeBaseAdapter.setCurPosition(position);
 					homeBaseAdapter.notifyDataSetChanged();
 					AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
@@ -295,6 +300,10 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.clear_btn:
+			//当连续注册或连续识别没有释放时不弹出对话框。
+			if(enrollPage.isAuto || identifyPage.isAuto){
+				return;
+			}
 			AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
 			builder.setTitle("删除");
@@ -331,7 +340,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 			synchronized (enrollPage.fpSynchrLock) {
 			return	FingerUtils.ClearALlFP();
 								
-			}
+			}				
 		}
 
 		@Override
