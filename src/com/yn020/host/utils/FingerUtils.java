@@ -1,10 +1,11 @@
 package com.yn020.host.utils;
 
-import com.lidroid.xutils.util.LogUtils;
+
 import com.yn020.host.R;
 import com.yn020.host.fragment.HomeFragment;
 
 import android.content.Context;
+
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -125,13 +126,14 @@ public class FingerUtils {
 		FingerRawPrintData fingerRawPrintData = null;
 		boolean ret_FingerImage=false;	//采集指纹图像标志
 		Drawable fingerDrawable=null;
+	
 		ret_FingerImage =FingerManager.getSharedInstance().FPM_getFingerImage(imageBytes, imageSizes);
 		if (ret_FingerImage){
 			fingerRawPrintData = new FingerRawPrintData();
 			fingerRawPrintData.setRawData(imageBytes);
 			fingerRawPrintData.setImage_W((int) imageSizes[0]);
 			fingerRawPrintData.setImage_H((int) imageSizes[0]);
-			fingerDrawable = fingerRawPrintData.toDrawable(); // 处理的部分放在这里，显示才不会卡
+			fingerDrawable = fingerRawPrintData.toDrawable(); // 把byte[] 转换成Drawable			
 			
 			Message msg =Message.obtain();
 			msg.obj=fingerDrawable;

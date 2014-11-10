@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:imagecontrol="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"    
     android:orientation="horizontal" >
@@ -10,13 +11,17 @@
         android:background="@color/darkcyan"
         android:orientation="vertical" >
 
-        <ImageView
+        <com.yn020.host.page.RoundImageView
             android:id="@+id/fp_image"
             android:layout_width="240dp"
             android:layout_height="260dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
-            android:background="@drawable/fp_image_bg"
+            android:scaleType="fitCenter"
+            imagecontrol:border_inside_color="#ffd5d1c8"
+            imagecontrol:border_outside_color="#FF00FF00"
+            imagecontrol:border_thickness="2dp"
+            android:src="@drawable/tem"
            />
 
         <android.support.v4.view.ViewPager

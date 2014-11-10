@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,8 +50,8 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	@ViewInject(R.id.fp_listview)
 	private ListView fp_listview;
 	@ViewInject(R.id.fp_image)
-//	private com.yn020.host.page.CircleImage fp_image;
-	private ImageView fp_image;
+	private com.yn020.host.page.RoundImageView fp_image;
+//	private ImageView fp_image;
 	
 	@ViewInject(R.id.clear_btn)
 	private Button clear_btn;
@@ -130,7 +131,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 		public void handleMessage(android.os.Message msg) {
 			Drawable fingerDrawable = (Drawable) msg.obj;
 			 fp_image.setImageDrawable(fingerDrawable);	  
-			
+				
 		};
 	};
 	public EnrollPage enrollPage;

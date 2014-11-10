@@ -13,6 +13,7 @@ public class FingerBitmapUtil {
 	public static Drawable fingerRawDataToDrawable(byte[] rawData, int image_W,
 			int image_H) {
 		Bitmap bitmap = fingerRawDataToBitmap(rawData, image_W, image_H);
+		@SuppressWarnings("deprecation")
 		BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
 		return bitmapDrawable;
 
