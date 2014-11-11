@@ -15,7 +15,7 @@
         android:gravity="center"
         android:paddingLeft="20dip"
         android:paddingRight="20dip"
-        android:text="单个注册"
+        android:text="@string/singleEnroll"
         android:textColor="@drawable/common_button_textcolor"
         android:textSize="20sp" />
 
@@ -29,7 +29,7 @@
         android:gravity="center"
         android:paddingLeft="20dip"
         android:paddingRight="20dip"
-        android:text="连续注册"
+        android:text="@string/autoEnroll"
         android:textColor="@drawable/common_button_textcolor"
         android:textSize="20sp" />
 

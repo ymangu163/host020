@@ -15,7 +15,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="63dip"
         android:layout_marginTop="50dip"
-        android:text="Secutity Level:"
+        android:text="Security Level:"
         android:textSize="20sp" />
 
     <EditText

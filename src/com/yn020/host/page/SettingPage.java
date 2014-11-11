@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yn020.host.R;
+import com.yn020.host.utils.SharePrefUtil;
 import com.yn020.host.utils.ToastUtils;
 
 public class SettingPage extends BasePage implements OnClickListener {
@@ -92,14 +94,21 @@ public class SettingPage extends BasePage implements OnClickListener {
 	}
 
 	private void processSetBtn() {
-		ToastUtils.disToast(ctx, "设置成功！");
+		
+		SharePrefUtil.saveString(ctx, "Security_Level", secure_level_edittext.getText().toString());
+		SharePrefUtil.saveString(ctx, "Auto_Learn", auto_learn_edittext.getText().toString());
+		SharePrefUtil.saveString(ctx, "Duplication_Check", dup_check_edittext.getText().toString());
+		
+		ToastUtils.custLocationToast(ctx, "设置成功！");
+		
 	}
 
 	private void procssGetBtn() {
-		String str=auto_learn_edittext.getText().toString();
-		if(TextUtils.isEmpty(str)){
-			auto_learn_edittext.setText("ON");
-		}	
+		secure_level_edittext.setText(SharePrefUtil.getString(ctx, "Security_Level", "3"));		
+		dup_check_edittext.setText(SharePrefUtil.getString(ctx, "Duplication_Check", "ON"));
+		auto_learn_edittext.setText(SharePrefUtil.getString(ctx, "Auto_Learn", "OFF"));		
+		LogUtils.d(SharePrefUtil.getString(ctx, "Security_Level", null)+"--->"+SharePrefUtil.getString(ctx, "Duplication_Check", null)+
+				"---->"+SharePrefUtil.getString(ctx, "Auto_Learn", null));
 		
 	}
 

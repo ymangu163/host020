@@ -65,7 +65,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 			  if(id!=0){
 				  AddToList(id);			  
 			  }
-			  ToastUtils.disToast(ctx, str);	
+			  ToastUtils.custLocationToast(ctx, str);	
 			}
 		};
 
@@ -76,22 +76,40 @@ public class EnrollPage extends BasePage implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-		case R.id.enroll_fp_btn:
-			LogUtils.d("single Enroll isOperating --->"+isOperating());
+		case R.id.enroll_fp_btn:			
 			/**
-			 * 注意：AsyncTask 是开启一个子线程来执行，所以不耽误主线程运行，还原isOperating状态就放在子线程中
+			 * 注意：AsyncTask 是开启一个子线程来执行，所以不耽误主线程运行，还原auto_enroll_fp_btn状态就放在子线程中
 			 **/
 			if(!isOperating()){
 				isOperating=true;	
 				setOperating(isOperating);
+				
+				if(!isAuto){				
+					enroll_fp_btn.setText("  取 消     ");	
+					auto_enroll_fp_btn.setEnabled(false);
+				}else{				
+					enroll_fp_btn.setText("单个注册");	
+					enroll_fp_btn.setEnabled(true);
+				}					
+				isAuto=!isAuto;
+				
 				new EnrollTask().execute();  //执行异步任务		
+			}else{
+				if(isAuto){ //正在操作单个注册
+					enroll_fp_btn.setText("单个注册");	
+					enroll_fp_btn.setEnabled(true);
+					isAuto=!isAuto;
+				}	
+				LogUtils.d("quit single enroll");
+				return;								
 			}
 			break;
 		case R.id.auto_enroll_fp_btn:
-			LogUtils.d("auto Enroll isOperating --->"+isOperating());
+			
 			if(isOperating()){
 				if(isAuto){ //正在循环注册的话,则退出循环
 					auto_enroll_fp_btn.setText("连续注册");	
+					enroll_fp_btn.setEnabled(true);
 					isAuto=!isAuto;
 				}	
 				LogUtils.d("quit auto enroll");
@@ -101,9 +119,11 @@ public class EnrollPage extends BasePage implements OnClickListener {
 			isOperating=true;		
 			setOperating(isOperating);
 			if(!isAuto){				
-				auto_enroll_fp_btn.setText("    Free     ");									
+				auto_enroll_fp_btn.setText("  取 消     ");	
+				enroll_fp_btn.setEnabled(false);
 			}else{				
-				auto_enroll_fp_btn.setText("连续注册");					
+				auto_enroll_fp_btn.setText("连续注册");		
+				enroll_fp_btn.setEnabled(true);
 			}					
 			isAuto=!isAuto;
 	
@@ -134,18 +154,20 @@ public class EnrollPage extends BasePage implements OnClickListener {
 							MediaPlayer.create(ctx, R.raw.fail).start();
 							break;				
 						case -1:
-							str="退出循环.";
+							str="退出注册.";
+							MediaPlayer.create(ctx, R.raw.fail).start();
 							break;
 						default:
 							str= "注册失败！";
 							MediaPlayer.create(ctx, R.raw.fail).start();
 							break;
 						}
-//						ToastUtils.disToast(ctx, str);	
+
 						msg.obj=str;
 						autoEnrollHandler.sendMessage(msg);
 						isOperating=false;		
 						setOperating(isOperating);
+						
 					}	
 					
 				}
@@ -201,15 +223,22 @@ public class EnrollPage extends BasePage implements OnClickListener {
 				str="指纹重复！";
 				MediaPlayer.create(ctx, R.raw.fail).start();
 				break;				
-			case FingerManager.ERR_FAIL:
+			case -1:
+				str="退出注册.";
+				MediaPlayer.create(ctx, R.raw.fail).start();
+				break;
+			default:
 				str= "注册失败！";
 				MediaPlayer.create(ctx, R.raw.fail).start();
 				break;
 			}
-			ToastUtils.disToast(ctx, str);			
+			ToastUtils.custLocationToast(ctx, str);			
 			singleEnroll=false;
 			isOperating=false;
 			setOperating(isOperating);
+			auto_enroll_fp_btn.setEnabled(true);
+			enroll_fp_btn.setText("单个注册");	
+			isAuto=false;
 		}	
 		
 	}
@@ -227,12 +256,6 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		
 		homeFragment.freshListViewData(list);				
 	}
-	
-	
-	
-	
-	
-	
 	
 	
 	

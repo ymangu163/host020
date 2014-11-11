@@ -6,10 +6,10 @@ import java.util.Map;
 
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
+
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -238,6 +238,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 				public void onClick(View v) {
 					//当连续注册或连续识别没有释放时不弹出对话框。
 					if(enrollPage.isAuto || identifyPage.isAuto){
+						ToastUtils.custLocationToast(ctx, "请先取消操作！");
 						return;
 					}
 					
@@ -256,9 +257,9 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 								fpDataList.remove(position);
 								homeBaseAdapter.setCurPosition(0);
 								homeBaseAdapter.notifyDataSetChanged();
-								ToastUtils.disToast(ctx, "指纹ID="+id+"删除成功！");
+								ToastUtils.custLocationToast(ctx, "指纹ID="+id+"删除成功！");
 							}else{
-								ToastUtils.disToast(ctx, "删除失败！");
+								ToastUtils.custLocationToast(ctx, "删除失败！");
 							}
 							deleteDialog.dismiss();
 						}
@@ -307,7 +308,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 			}
 			AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setTitle("删除");
+			builder.setTitle("清空");
 			builder.setMessage("确认要清空指纹吗？");
 			builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
 				
@@ -349,13 +350,13 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 			super.onPostExecute(result);
 			LogUtils.d("enter onPostExecute");
 			if(result){
-				ToastUtils.disToast(ctx, "清空指纹成功！");
+				ToastUtils.custLocationToast(ctx, "清空指纹成功！");
 				if(fpDataList!=null){
 					fpDataList.removeAll(fpDataList);			
 					homeBaseAdapter.notifyDataSetChanged();	
 				}
 			}else{
-				ToastUtils.disToast(ctx, "清空指纹失败！");
+				ToastUtils.custLocationToast(ctx, "清空指纹失败！");
 				
 			}			
 			

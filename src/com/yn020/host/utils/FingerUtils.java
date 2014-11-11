@@ -38,7 +38,8 @@ public class FingerUtils {
 			w_return = false;
 			while (!w_return) {// 获取图像
 				//在这里检测一下 是否已退出了循环注册且是不是单次注册
-				if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
+//				if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
+				if(!homeFragment.enrollPage.isAuto){
 					if(i==0){ //新开始的注册
 						return -1;
 					}else{
@@ -61,7 +62,7 @@ public class FingerUtils {
 				return 1;
 			}
 		}
-		if(!homeFragment.enrollPage.isAuto &&!homeFragment.enrollPage.singleEnroll){
+		if(!homeFragment.enrollPage.isAuto ){
 			return 1;
 		}
 		
@@ -81,7 +82,7 @@ public class FingerUtils {
 		boolean w_return = false;
 		while (!w_return) {
 			//在这里检测一下 是否已退出了循环识别且是不是单次识别
-			if(!homeFragment.identifyPage.isAuto &&!homeFragment.identifyPage.singleIdentify){
+			if(!homeFragment.identifyPage.isAuto ){
 				return -1;
 			}
 			w_return = FingerManager.getSharedInstance().FPM_getIdentifyImage();

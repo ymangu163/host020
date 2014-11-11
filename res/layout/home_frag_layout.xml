@@ -84,7 +84,7 @@
             android:background="@drawable/common_button_bg"
             android:paddingLeft="30dip"
             android:paddingRight="30dip"
-            android:text="清 空"
+            android:text="@string/clear"
             android:textColor="@drawable/common_button_textcolor"
             android:textSize="18sp" />
     </LinearLayout>

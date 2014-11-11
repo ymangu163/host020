@@ -50,7 +50,7 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 			@Override
 			public void handleMessage(Message msg) {
 				String str=(String) msg.obj;
-				ToastUtils.disToast(ctx, str);				
+				ToastUtils.custLocationToast(ctx, str);				
 			}
 		};
 	}
@@ -59,19 +59,40 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.verify_fp_btn:
-			LogUtils.d("single identify isOperating --->"+isOperating());
+			identify_fp_btn.setEnabled(false);
 			if(!isOperating()){
 				isOperating=true;
 				setOperating(isOperating);
+				
+				if(!isAuto){				
+					verify_fp_btn.setText("  取 消     ");	
+					identify_fp_btn.setEnabled(false);
+				}else{				
+					verify_fp_btn.setText("1:1  识别");	
+					identify_fp_btn.setEnabled(true);
+				}					
+				isAuto=!isAuto;
+							
+				
 				new VerifyTask().execute(); 
+			}else {
+				if(isAuto){ //正在操作单个注册
+					verify_fp_btn.setText("1:1  识别");	
+					identify_fp_btn.setEnabled(true);
+					isAuto=!isAuto;
+				}	
+				LogUtils.d("quit single enroll");
+				return;	
+				
 			}
 			
 			break;
 		case R.id.identify_fp_btn:
-			LogUtils.d("auto identify isOperating --->"+isOperating());
+			verify_fp_btn.setEnabled(false);
 			if(isOperating()){
 				if(isAuto){ //正在循环识别的话,则退出循环
-					identify_fp_btn.setText("1:N 识别");		
+					identify_fp_btn.setText("1:N 识别");	
+					verify_fp_btn.setEnabled(true);
 					isAuto=!isAuto;
 				}	
 				return;
@@ -79,9 +100,10 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 			isOperating=true;
 			setOperating(isOperating);
 			if(!isAuto){				
-				identify_fp_btn.setText("    Free    ");									
+				identify_fp_btn.setText("  取 消    ");									
 			}else{				
-				identify_fp_btn.setText("1:N 识别");					
+				identify_fp_btn.setText("1:N 识别");	 
+				verify_fp_btn.setEnabled(true);
 			}	
 			isAuto=!isAuto;			
 			
@@ -109,13 +131,15 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 						MediaPlayer.create(ctx, R.raw.fail).start();	
 						break;
 					default:
-						str="退出循环.";
+						str="退出识别.";
+						MediaPlayer.create(ctx, R.raw.fail).start();	
 						break;
 					}
 					msg.obj=str;
 					idenfityHandler.sendMessage(msg);
 					isOperating=false;
 					setOperating(isOperating);
+					
 					}
 					
 				}
@@ -147,15 +171,22 @@ public class IdentifyPage extends BasePage implements OnClickListener {
 					MediaPlayer.create(ctx, R.raw.success).start();
 					break;					
 				}
-			default:
+			case FingerManager.ERR_FAIL:
 				str="识别失败！";
 				MediaPlayer.create(ctx, R.raw.fail).start();	
 				break;
+			default:
+				str="退出识别！";
+				MediaPlayer.create(ctx, R.raw.fail).start();	
+				break;
 			}
-			ToastUtils.disToast(ctx, str);
+			ToastUtils.custLocationToast(ctx, str);
 			singleIdentify=false;	
 			isOperating=false;
 			setOperating(isOperating);
+			identify_fp_btn.setEnabled(true);
+			verify_fp_btn.setText("1:1  识别");
+			isAuto=false;
 		}
 		
 		

@@ -52,7 +52,7 @@ public class MenuFragment extends BaseFragment implements OnItemClickListener {
 			long id) {
 		menuAdapter.setCurPosition(position);
 		slidingMenu.toggle();
-		ToastUtils.disToast(ctx, "您选择的是："+menuStr[position]);
+		ToastUtils.custLocationToast(ctx, "您选择的是："+menuStr[position]);
 		if(homeFragment==null){
 			if(getActivity() instanceof MainActivity){
 				homeFragment = ((MainActivity)getActivity()).getHomeFragment();

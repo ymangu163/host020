@@ -28,7 +28,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	private Handler handler=new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			String str=(String) msg.obj;
-			ToastUtils.disToast(MainActivity.this, str);
+			ToastUtils.custLocationToast(MainActivity.this, str);
 			
 		};
 	};
@@ -96,6 +96,7 @@ public class MainActivity extends SlidingFragmentActivity {
 		
 		
 	}
+	
      public HomeFragment getHomeFragment(){
     	 homeFragment=(HomeFragment)getSupportFragmentManager().findFragmentByTag("Home");
     	 return homeFragment;    	 
