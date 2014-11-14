@@ -13,6 +13,7 @@ import com.lidroid.xutils.util.LogUtils;
 import com.yn020.host.fragment.HomeFragment;
 import com.yn020.host.fragment.MenuFragment;
 import com.yn020.host.utils.FingerManager;
+import com.yn020.host.utils.FingerUtils;
 import com.yn020.host.utils.ToastUtils;
 
 public class MainActivity extends SlidingFragmentActivity {
@@ -81,7 +82,8 @@ public class MainActivity extends SlidingFragmentActivity {
 				String str="";
 				if(FingerManager.getSharedInstance().FPM_stopFP()){
 					if(FingerManager.getSharedInstance().FPM_initFP()){
-						str="初始化成功!";						
+						str="初始化成功!";		
+						FingerUtils.circul_write_tmplate();  //导入指纹模板到 内存中
 					}else{
 						str="初始化失败!";
 					}

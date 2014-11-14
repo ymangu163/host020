@@ -32,5 +32,13 @@
         android:text="@string/autoEnroll"
         android:textColor="@drawable/common_button_textcolor"
         android:textSize="20sp" />
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="93dip"
+        android:padding="3dip"      
+        android:src="@drawable/right_arrow"
+        />
 
 </LinearLayout>

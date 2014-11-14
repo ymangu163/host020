@@ -3,8 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    >
+    android:focusableInTouchMode="true"    >
+      <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+     	android:layout_marginTop="72dip"
+     	android:layout_marginLeft="25dip"
+        android:padding="3dip"      
+        android:src="@drawable/left_arrow"
+        />
 
     <!-- 安全等级选择 -->
 
@@ -13,9 +20,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="63dip"
+        android:layout_marginLeft="75dip"
         android:layout_marginTop="50dip"
-        android:text="Security Level:"
+        android:text="安全级别:"
         android:textSize="20sp" />
 
     <EditText
@@ -48,9 +55,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/security_textview"
-        android:layout_marginLeft="25dip"
+        android:layout_marginLeft="75dip"
         android:layout_marginTop="20dip"
-        android:text="Duplication Ckeck:"
+        android:text="重复检测:"
         android:textSize="20sp" />
 
     <EditText
@@ -82,10 +89,10 @@
         android:id="@+id/auto_learn_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="12dp"
         android:layout_toRightOf="@+id/secure_level_edittext"
-        android:text="Auto Learn:"
+        android:text="自动学习:"
         android:layout_alignBaseline="@+id/security_textview"
         android:textSize="20sp" />
 

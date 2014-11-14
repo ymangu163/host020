@@ -277,11 +277,9 @@ jboolean JNICALL getEnrollImage(JNIEnv * env, jobject object) {
 //发出注册命令
 jboolean JNICALL enrollStart(JNIEnv * env, jobject object, jlong enrollId) {
 	int w_nRet = -1;
-	THREAD_LOCK()
-	;
+	THREAD_LOCK();
 	w_nRet = CommandProcess(CMD_ENROLL_CODE, 0, enrollId, 0);
-	THREAD_UNLOCK()
-	;
+	THREAD_UNLOCK();
 	if (ERR_SUCCESS != w_nRet) {
 		LOG_D("enrollStart failed!");
 		return false;
@@ -292,11 +290,9 @@ jboolean JNICALL enrollStart(JNIEnv * env, jobject object, jlong enrollId) {
 jboolean JNICALL getAvaliableId(JNIEnv * env, jobject object, jlongArray id) {
 	int w_nRet = -1;
 	UINT16 w_nFpID = 0;
-	THREAD_LOCK()
-	;
+	THREAD_LOCK();
 	w_nRet = CommandProcess(CMD_GET_EMPTY_ID_CODE, (UINT32) &w_nFpID, 0, 0); //获取可用ID
-	THREAD_UNLOCK()
-	;
+	THREAD_UNLOCK();
 	if (w_nRet == ERR_SUCCESS) {
 		jlong* pid = env->GetLongArrayElements(id, NULL);
 		pid[0] = w_nFpID;						//把获得的指纹id传递回java
@@ -327,11 +323,9 @@ jboolean JNICALL initFP(JNIEnv *env, jobject object) {
 //关闭指纹传感器
 jboolean JNICALL stopFP(JNIEnv *env, jobject object) {
 	int w_nRet = -1;
-	THREAD_LOCK()
-	;
+	THREAD_LOCK();
 	w_nRet = CommandProcess(CMD_STOP_FPLIB_CODE, 0, 0, 0);
-	THREAD_UNLOCK()
-	;
+	THREAD_UNLOCK();
 	if (ERR_SUCCESS != w_nRet) {
 		LOG_D("stop failed!");
 		return false;
@@ -341,38 +335,52 @@ jboolean JNICALL stopFP(JNIEnv *env, jobject object) {
 
 }
 
+//设置指纹是否可重复
+jboolean JNICALL  setDuplicateCheck(JNIEnv *env, jobject object,jint CheckCode){
+	int w_nRet = -1;
+	THREAD_LOCK();
+	w_nRet = CommandProcess(CMD_SET_DUP_CHECK_CODE, CheckCode, 0, 0);
+	THREAD_UNLOCK();
+	if (ERR_SUCCESS != w_nRet) {
+		LOG_D("setDuplicateCheck  failed!");
+		return false;
+	}
+	LOG_D("setCheck success! CheckCode=%d",CheckCode);
+	return true;
+}
+
+//获取指纹是否可重复
+jint JNICALL  getDuplicateCheck(JNIEnv *env, jobject object){
+	int CheckCode = -1;
+	THREAD_LOCK();
+	CheckCode = CommandProcess(CMD_GET_DUP_CHECK_CODE, 0, 0, 0);
+	THREAD_UNLOCK();
+	LOG_D("getCheck success! CheckCode=%d",CheckCode);
+	return CheckCode;
+}
+
+
+
 //java方法与本地方法绑定
 static const JNINativeMethod gMethods[] = {
 		{ "initFP", "()Z", (void *) initFP },
 		{ "stopFP", "()Z", (void *) stopFP },
-		{ "deleteFP", "(J)Z",
-				(void *) deleteFP },
-				{ "deleteAllFP", "()Z",
-				(void *) deleteAllFP },
-				{ "readTemplate", "(J[B)Z",
-				(void *) readTemplate },
-				{ "writeTemplate", "(I[B)Z",
-				(void *) writeTemplate },
-				{ "getFingerImage", "([B[J)Z",
-				(void *) getFingerImage },
-				{ "identifyFP", "([J)Z",
-				(void *) identifyFP },
-				{ "getIdentifyImage", "()Z",
-				(void *) getIdentifyImage },
-				{ "enrollCompose", "(J)I",
-				(void *) enrollCompose },
-				{ "loopDetectFinger", "()Z",
-				(void *) loopDetectFinger },
-				{ "detectFinger", "()Z",
-				(void *) detectFinger },
-				{ "enrollTimes", "(JI)Z",
-				(void *) enrollTimes },
-				{ "getEnrollImage", "()Z",
-				(void *) getEnrollImage },
-				{ "enrollStart", "(J)Z",
-				(void *) enrollStart },
-				{ "getAvaliableId", "([J)Z",
-				(void *) getAvaliableId },
+		{ "deleteFP", "(J)Z",(void *) deleteFP },
+		{ "deleteAllFP", "()Z",(void *) deleteAllFP },
+		{ "readTemplate", "(J[B)Z",(void *) readTemplate },
+		{ "writeTemplate", "(I[B)Z",(void *) writeTemplate },
+		{ "getFingerImage", "([B[J)Z",(void *) getFingerImage },
+		{ "identifyFP", "([J)Z",(void *) identifyFP },
+		{ "getIdentifyImage", "()Z",(void *) getIdentifyImage },
+		{ "enrollCompose", "(J)I",(void *) enrollCompose },
+		{ "loopDetectFinger", "()Z",(void *) loopDetectFinger },
+		{ "detectFinger", "()Z",(void *) detectFinger },
+		{ "enrollTimes", "(JI)Z",(void *) enrollTimes },
+		{ "getEnrollImage", "()Z",(void *) getEnrollImage },
+		{ "enrollStart", "(J)Z",(void *) enrollStart },
+		{ "getAvaliableId", "([J)Z",(void *) getAvaliableId },
+		{ "setDuplicateCheck", "(I)Z",(void *) setDuplicateCheck },
+		{ "getDuplicateCheck", "()I",(void *) getDuplicateCheck }
 };
 
 //为java中的某个类注册本地方法

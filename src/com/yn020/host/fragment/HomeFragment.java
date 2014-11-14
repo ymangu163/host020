@@ -66,7 +66,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	}
 
 	List<BasePage> list = new ArrayList<BasePage>();
-	private HomeBaseAdapter homeBaseAdapter;
+	public HomeBaseAdapter homeBaseAdapter;
 	private int deletePosition=1;
 
 	@Override
@@ -105,8 +105,10 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	}
 	
 	public void freshListViewData(List<Map<String,Long>> list){
-		
+//		fpDataList.removeAll(fpDataList);
 		fpDataList = list;
+//		fpDataList.addAll(list);
+		
 		if(homeBaseAdapter==null){
 			homeBaseAdapter = new HomeBaseAdapter(ctx, fpDataList);
 			fp_listview.setAdapter(homeBaseAdapter);		
@@ -179,7 +181,7 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 	
 	
 	
-	class HomeBaseAdapter extends BaseAdapter{
+	public class HomeBaseAdapter extends BaseAdapter{
 		private List<Map<String,Long>> list;	
 		private Context ctx;
 		private int curPosition=0;  //当前选中的项

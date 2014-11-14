@@ -226,14 +226,14 @@ public class FingerManager {
 	
 	
 	
-	//写入模板到sdcard
+	// *** 写入指定id的指纹模板*//
 	public boolean FPM_writeTemplate(int id, byte[] templateBytes){
 		synchronized (fingerManagerLock) {
 			return writeTemplate(id, templateBytes);
 		}
 	}
 	
-	//读取指纹模板到指纹模块中
+	// *** 读取指定id的指纹模板*//
 	public boolean FPM_readTemplate(long id, byte[] templateBytes){
 		synchronized (fingerManagerLock) {
 			return readTemplate(id,templateBytes);
@@ -254,12 +254,26 @@ public class FingerManager {
 	}
 	
 	// 获取指纹图像
-	public  boolean FPM_getFingerImage(byte[] imageByte, long[] imageSize){
+	public boolean FPM_getFingerImage(byte[] imageByte, long[] imageSize) {
 		synchronized (fingerManagerLock) {
-			return getFingerImage(imageByte,imageSize);
+			return getFingerImage(imageByte, imageSize);
+		}
+	}
+	
+	
+	//设置指纹是否可重复
+	public  boolean FPM_setDuplicateCheck(int CheckCode){
+		synchronized (fingerManagerLock) {
+			return setDuplicateCheck(CheckCode);
 		}				
 	}
 	
+	//得到指纹是否可重复参数
+	public  int FPM_getDuplicateCheck(){
+		synchronized (fingerManagerLock) {
+			return getDuplicateCheck();
+		}				
+	}
 	
 	
 	
@@ -314,7 +328,19 @@ public class FingerManager {
 		public native boolean writeTemplate(int id, byte[] templateBytes);
 
 		// 获取指纹图像
-		public native boolean getFingerImage(byte[] imageByte, long[] imageSize);		
+		public native boolean getFingerImage(byte[] imageByte, long[] imageSize);	
+		
+		//设置指纹是否可重复
+		public native boolean setDuplicateCheck(int CheckCode);	
+		
+		//得到指纹是否可重复参数
+		public native int getDuplicateCheck();	
+		
+		
+		
+		
+		
+		
 	
 /////////////////////////////////////////////////////////////////////////////	
 		

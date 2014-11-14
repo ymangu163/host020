@@ -16,6 +16,7 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.util.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yn020.host.R;
+import com.yn020.host.utils.FingerManager;
 import com.yn020.host.utils.SharePrefUtil;
 import com.yn020.host.utils.ToastUtils;
 
@@ -93,20 +94,44 @@ public class SettingPage extends BasePage implements OnClickListener {
 		}
 	}
 
+	private final int DUPLICATION_ON=1;
+	private final int DUPLICATION_OFF=0;
 	private void processSetBtn() {
 		
 		SharePrefUtil.saveString(ctx, "Security_Level", secure_level_edittext.getText().toString());
 		SharePrefUtil.saveString(ctx, "Auto_Learn", auto_learn_edittext.getText().toString());
 		SharePrefUtil.saveString(ctx, "Duplication_Check", dup_check_edittext.getText().toString());
+		boolean re_Set=false;
 		
-		ToastUtils.custLocationToast(ctx, "设置成功！");
+		/**
+		 *  把参数设置到指纹库中
+		 **/
+		if("OFF".equals(dup_check_edittext.getText().toString().trim())){
+			re_Set=FingerManager.getSharedInstance().FPM_setDuplicateCheck(DUPLICATION_OFF);
+		}else{
+			re_Set=FingerManager.getSharedInstance().FPM_setDuplicateCheck(DUPLICATION_ON);
+			
+		}
+		if(re_Set){
+			ToastUtils.custLocationToast(ctx, "设置成功！");			
+		}else{
+			ToastUtils.custLocationToast(ctx, "设置失败！");			
+		}
 		
 	}
 
 	private void procssGetBtn() {
+		
+		int re_check=FingerManager.getSharedInstance().FPM_getDuplicateCheck();
+		if(re_check==0){
+			dup_check_edittext.setText("OFF");
+			
+		}else if(re_check==1){
+			dup_check_edittext.setText("ON");			
+		}
+		
 		secure_level_edittext.setText(SharePrefUtil.getString(ctx, "Security_Level", "3"));		
-		dup_check_edittext.setText(SharePrefUtil.getString(ctx, "Duplication_Check", "ON"));
-		auto_learn_edittext.setText(SharePrefUtil.getString(ctx, "Auto_Learn", "OFF"));		
+		auto_learn_edittext.setText(SharePrefUtil.getString(ctx, "Auto_Learn", "ON"));		
 		LogUtils.d(SharePrefUtil.getString(ctx, "Security_Level", null)+"--->"+SharePrefUtil.getString(ctx, "Duplication_Check", null)+
 				"---->"+SharePrefUtil.getString(ctx, "Auto_Learn", null));
 		
