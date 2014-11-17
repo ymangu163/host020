@@ -139,11 +139,11 @@ public class SettingPage extends BasePage implements OnClickListener {
 		
 		//获取安全等级参数
 		int re_Level= FingerManager.getSharedInstance().FPM_getSecurityLevel();
-		secure_level_edittext.setText(String.valueOf(re_Level));		
+//		secure_level_edittext.setText(String.valueOf(re_Level));		
 		
 		
 		
-//		secure_level_edittext.setText(SharePrefUtil.getString(ctx, "Security_Level", "3"));		
+		secure_level_edittext.setText(SharePrefUtil.getString(ctx, "Security_Level", "3"));		
 		auto_learn_edittext.setText(SharePrefUtil.getString(ctx, "Auto_Learn", "ON"));		
 		LogUtils.d(SharePrefUtil.getString(ctx, "Security_Level", null)+"--->"+SharePrefUtil.getString(ctx, "Duplication_Check", null)+
 				"---->"+SharePrefUtil.getString(ctx, "Auto_Learn", null));
