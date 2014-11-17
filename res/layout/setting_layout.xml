@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="75dip"
+        android:layout_marginLeft="95dip"
         android:layout_marginTop="50dip"
         android:text="安全级别:"
         android:textSize="20sp" />
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/security_textview"
-        android:layout_marginLeft="75dip"
+        android:layout_marginLeft="95dip"
         android:layout_marginTop="20dip"
         android:text="重复检测:"
         android:textSize="20sp" />

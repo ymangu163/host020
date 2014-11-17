@@ -255,7 +255,7 @@ public class EnrollPage extends BasePage implements OnClickListener {
 		list.add(map);
 		
 		homeFragment.freshListViewData(list);	
-		homeFragment.homeBaseAdapter.setCurPosition(list.size()-1);  //每添加一个就跳到新的位置
+		
 	}
 	
 	

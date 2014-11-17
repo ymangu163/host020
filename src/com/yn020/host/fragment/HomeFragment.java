@@ -113,6 +113,9 @@ public class HomeFragment extends BaseFragment implements OnItemClickListener, O
 			homeBaseAdapter = new HomeBaseAdapter(ctx, fpDataList);
 			fp_listview.setAdapter(homeBaseAdapter);		
 		}else{
+			homeBaseAdapter.setCurPosition(list.size()-1);  //每添加一个就跳到新的位置
+			fp_listview.smoothScrollToPosition(fp_listview.getCount()-1);  //移到到ListView的最后一行
+			LogUtils.d("fp_listview.getCount()--->"+fp_listview.getCount());
 			homeBaseAdapter.notifyDataSetChanged();
 		}	
 		

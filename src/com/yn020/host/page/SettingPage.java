@@ -101,18 +101,26 @@ public class SettingPage extends BasePage implements OnClickListener {
 		SharePrefUtil.saveString(ctx, "Security_Level", secure_level_edittext.getText().toString());
 		SharePrefUtil.saveString(ctx, "Auto_Learn", auto_learn_edittext.getText().toString());
 		SharePrefUtil.saveString(ctx, "Duplication_Check", dup_check_edittext.getText().toString());
-		boolean re_Set=false;
+		boolean re_SetCheck=false;
+		boolean re_SetLevel=false;
 		
 		/**
 		 *  把参数设置到指纹库中
 		 **/
+		//设置重复检测参数
 		if("OFF".equals(dup_check_edittext.getText().toString().trim())){
-			re_Set=FingerManager.getSharedInstance().FPM_setDuplicateCheck(DUPLICATION_OFF);
+			re_SetCheck=FingerManager.getSharedInstance().FPM_setDuplicateCheck(DUPLICATION_OFF);
 		}else{
-			re_Set=FingerManager.getSharedInstance().FPM_setDuplicateCheck(DUPLICATION_ON);
-			
+			re_SetCheck=FingerManager.getSharedInstance().FPM_setDuplicateCheck(DUPLICATION_ON);			
 		}
-		if(re_Set){
+		//设置安全等级参数
+		re_SetLevel =FingerManager.getSharedInstance().FPM_setSecurityLevel(Integer.valueOf(secure_level_edittext.getText().toString()));
+		
+		//设置auto_learn参数
+		
+		
+		
+		if(re_SetCheck && re_SetLevel){
 			ToastUtils.custLocationToast(ctx, "设置成功！");			
 		}else{
 			ToastUtils.custLocationToast(ctx, "设置失败！");			
@@ -121,16 +129,21 @@ public class SettingPage extends BasePage implements OnClickListener {
 	}
 
 	private void procssGetBtn() {
-		
+		//获取重复检测参数
 		int re_check=FingerManager.getSharedInstance().FPM_getDuplicateCheck();
 		if(re_check==0){
-			dup_check_edittext.setText("OFF");
-			
+			dup_check_edittext.setText("OFF");			
 		}else if(re_check==1){
-			dup_check_edittext.setText("ON");			
+			dup_check_edittext.setText("ON");		
 		}
 		
-		secure_level_edittext.setText(SharePrefUtil.getString(ctx, "Security_Level", "3"));		
+		//获取安全等级参数
+		int re_Level= FingerManager.getSharedInstance().FPM_getSecurityLevel();
+		secure_level_edittext.setText(String.valueOf(re_Level));		
+		
+		
+		
+//		secure_level_edittext.setText(SharePrefUtil.getString(ctx, "Security_Level", "3"));		
 		auto_learn_edittext.setText(SharePrefUtil.getString(ctx, "Auto_Learn", "ON"));		
 		LogUtils.d(SharePrefUtil.getString(ctx, "Security_Level", null)+"--->"+SharePrefUtil.getString(ctx, "Duplication_Check", null)+
 				"---->"+SharePrefUtil.getString(ctx, "Auto_Learn", null));

@@ -359,6 +359,29 @@ jint JNICALL  getDuplicateCheck(JNIEnv *env, jobject object){
 	return CheckCode;
 }
 
+//设置安全等级参数
+jboolean JNICALL  setSecurityLevel(JNIEnv *env, jobject object,jint level){
+	int w_nRet = -1;
+	THREAD_LOCK();
+	w_nRet = CommandProcess(CMD_SET_SECURITYLEVEL_CODE, level, 0, 0);
+	THREAD_UNLOCK();
+	if (ERR_SUCCESS != w_nRet) {
+		LOG_D("setSecurityLevel  failed!");
+		return false;
+	}
+	LOG_D("setSecurityLevel success! Level=%d",level);
+	return true;
+}
+
+//获取安全等级参数
+jint JNICALL  getSecurityLevel(JNIEnv *env, jobject object){
+	int level = -1;
+	THREAD_LOCK();
+	level = CommandProcess(CMD_GET_SECURITYLEVEL_CODE, 0, 0, 0);
+	THREAD_UNLOCK();
+	LOG_D("getSecurityLevel success! Level=%d",level);
+	return level;
+}
 
 
 //java方法与本地方法绑定
@@ -380,7 +403,9 @@ static const JNINativeMethod gMethods[] = {
 		{ "enrollStart", "(J)Z",(void *) enrollStart },
 		{ "getAvaliableId", "([J)Z",(void *) getAvaliableId },
 		{ "setDuplicateCheck", "(I)Z",(void *) setDuplicateCheck },
-		{ "getDuplicateCheck", "()I",(void *) getDuplicateCheck }
+		{ "getDuplicateCheck", "()I",(void *) getDuplicateCheck },
+		{ "setSecurityLevel", "(I)Z",(void *) setSecurityLevel },
+		{ "getSecurityLevel", "()I",(void *) getSecurityLevel }
 };
 
 //为java中的某个类注册本地方法

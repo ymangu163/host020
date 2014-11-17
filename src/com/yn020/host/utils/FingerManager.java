@@ -275,6 +275,20 @@ public class FingerManager {
 		}				
 	}
 	
+	//设置指纹是否可重复
+	public  boolean FPM_setSecurityLevel(int level){
+		synchronized (fingerManagerLock) {
+			return setSecurityLevel(level);
+		}				
+	}
+	
+	//得到指纹是否可重复参数
+	public  int FPM_getSecurityLevel(){
+		synchronized (fingerManagerLock) {
+			return getSecurityLevel();
+		}				
+	}
+	
 	
 	
 	
@@ -336,7 +350,17 @@ public class FingerManager {
 		//得到指纹是否可重复参数
 		public native int getDuplicateCheck();	
 		
+		//设置安全等级
+		public native boolean setSecurityLevel(int level);	
 		
+		//得到安全等级参数
+		public native int getSecurityLevel();	
+		
+		//设置auto_learn
+		public native boolean setAutoLearn(boolean autoLearn);	
+		
+		//得到auto_learn参数
+		public native int getAutoLearn();	
 		
 		
 		
